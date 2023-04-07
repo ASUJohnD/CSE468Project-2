@@ -1,0 +1,80 @@
+# $Id: local.rules,v 1.11 2004/07/23 20:15:44 bmc Exp $
+
+# ----------------
+
+# LOCAL RULES
+
+# ----------------
+
+# This file intentionally does not come with signatures.  Put your local
+
+# additions here.
+
+
+
+#alert icmp any any <> 192.168.0.10 any (msg: "ICMP Packet found"; sid:10000001; )
+
+
+
+#alert tcp $EXTERNAL_NET any -> $HOME_NET 22 (msg:"SSH attempt"; flags: S; classtype:attempted-recon; sid:10000002; rev:0;)
+
+
+
+#alert tcp $EXTERNAL_NET any -> $HOME_NET 80 (msg: "HTTP GET Request";content: “GET”; classtype: web-application-activity; sid: 10000003; rev: 0;)
+
+
+
+#alert tcp $EXTERNAL_NET any -> $HOME_NET 139 (content: “|5c 00|P|00|I|00|P|00|E|00 5c|”; sid: 10000004; rev: 0; )
+
+
+
+#alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"ICMP echo request message NO.7"; classtype: icmp-event; icmp_seq: 7; sid: 10000005; rev: 0;)
+
+
+
+# Land Attack
+
+alert tcp 10.0.0.10 80 -> 10.0.0.10 80 (msg: "LAND attack detected"; flags:S; sid: 10000001; rev:0; )
+
+
+
+# SYN Flood Attack
+
+alert tcp any any -> 10.0.0.10 any (msg: "TCP SYN flood attack detected"; flags:S; threshold: type threshold, track by_dst, count 20, seconds 60; sid: 10000002; rev:0; )
+
+
+
+# Smurf Attack
+
+alert icmp 10.0.0.10 any -> 192.168.0.0/24 any (msg: "Smurf attack detected"; itype: 8; sid: 10000003; rev:0; )
+
+
+
+# UDP Flood Attack
+
+alert udp any any -> 10.0.0.10 any (msg: "UDP flood attack detected"; threshold: type threshold, track by_dst, count 10, seconds 60; sid: 10000004; rev:0; )
+
+
+
+# Port Scanning
+
+# TCP ACK Scan
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg: "ACK Scan detected"; flags:A; sid:10000005; rev:0; )
+
+# TCP FIN Scan
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg: "FIN Scan detected"; flags:F; sid:10000006; rev:0; )
+
+# TCP Xmas Scan
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg: "XMAS Tree Scan detected"; flags:UPF; sid:10000007; rev:0; )
+
+# TCP Null Scan
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg: "NULL Scan detected"; flags:0; sid: 10000008; rev:0; )
+
+# UDP Scan
+
+alert udp $EXTERNAL_NET any -> $HOME_NET any (msg: "UDP Scan detected"; sid:10000009; rev:0; )
+
